@@ -1,5 +1,5 @@
 import React from "react";
-import { Chart } from 'react-google-charts'
+import Chart from 'react-apexcharts'
 
 export default class Application extends React.Component {
     constructor(props) {
@@ -11,43 +11,77 @@ export default class Application extends React.Component {
     }
 
     componentDidMount() {
-        fetch (`http://localhost:4000/api/users/518686827096440832/`, {
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/users/518686827096440832/`, {
             
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
-            const userdata = [["Name", "Total Minutes"]];
+            let timeCounts = [];
+            let timeUserCounts = [];
             for (let i = 0; i < data.length; i++) {
-                let totalMinutes = data[i].totalTime / 60;
-                const hours = Math.floor(totalMinutes / 60)
+                let totalMinutes = Math.floor(data[i].totalTime / 60);
+                const hours = Math.round(totalMinutes / 60, 2)
                 const minutes = Math.round(totalMinutes % 60);
-
-                userdata.push([ (data[i].nickname || data[i].username) + "\n" + hours + ":" + ((minutes < 10) ? "0" + minutes : minutes), totalMinutes ]);
+                timeCounts.push(totalMinutes);
+                timeUserCounts.push((data[i].nickname || data[i].username) + "\n" + hours + "hr " + ((minutes < 10) ? "0" + minutes : minutes) + "min");
             }
-            this.setState({ userdata });
+            this.setState({ timeCounts, timeUserCounts });
         });
 
-        fetch (`http://localhost:4000/api/messages/518686827096440832/`, {
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/518686827096440832/`, {
             
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data);
-            const messagedata = [["Name", "Total Messages"]];
+            let messageCounts = [];
+            let messageCountUsers = [];
             for (let i = 0; i < data.length; i++) {
-
-                messagedata.push([ (data[i].nickname || data[i].username) + "\n" + data[i].count, data[i].count ]);
+                messageCounts.push(data[i].count);
+                messageCountUsers.push((data[i].nickname || data[i].username));
             }
-            this.setState({ messagedata });
+            this.setState({ messageCounts, messageCountUsers });
         });
+
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/trend/518686827096440832/`, {
+            
+        })
+        .then(res => res.json())
+        .then(data => {
+            let trendDay = [];
+            let trendDayValues = [];
+            for (let i = 0; i < data.length; i++) {
+                trendDay.push(data[i].date);
+                trendDayValues.push(data[i].count);
+            }
+            this.setState({ trendDay, trendDayValues });
+        });
+
+
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/total/518686827096440832/`, {
+            
+        })
+        .then(res => res.json())
+        .then(data => {
+            this.setState({ weeklymessages: data[0].count });
+        });
+
+
+        // fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/jointime/total/518686827096440832/`, {
+            
+        // })
+        // .then(res => res.json())
+        // .then(data => {
+        //     this.setState({ weeklyjointime: data.weeklyjointime });
+        // });
     }
 
     render() {
-        const { userdata, messagedata } = this.state;
+        const {  weeklymessages, timeCounts, timeUserCounts, messageCounts, messageCountUsers, trendDay, trendDayValues } = this.state;
+        console.log(trendDay, trendDayValues)
         return (
             <div>
-                <Chart
+                <span>Total Weekly Messages: {weeklymessages}</span>
+                {/* <Chart
                     width={'100%'}
                     height={'300px'}
                     chartType="ColumnChart"
@@ -59,20 +93,61 @@ export default class Application extends React.Component {
                             subtitle: 'Num joins per user in the last week',
                         },
                     }}
-                />
+                /> */}
                 <br/>
                 <Chart
-                    width={'100%'}
-                    height={'300px'}
-                    chartType="ColumnChart"
-                    data={messagedata}
                     options={{
-                        // Material design options
                         chart: {
-                            title: 'Weekly Message Quantity',
-                            subtitle: 'Num messages per user in the last week',
+                            id: 'apexchart-example'
                         },
+                        xaxis: {
+                            categories: messageCountUsers || []
+                        }
                     }}
+
+                    series={[
+                        {
+                            name: "Number of Messages Sent",
+                            data: messageCounts || []
+                        }
+                    ]}
+                    type="bar" width={'100%'} height={750}    
+                />
+                <Chart
+                    options={{
+                        chart: {
+                            id: 'apexchart-example'
+                        },
+                        xaxis: {
+                            categories: timeUserCounts || []
+                        }
+                    }}
+
+                    series={[
+                        {
+                            name: "Total Minutes in Server",
+                            data: timeCounts || []
+                        }
+                    ]}
+                    type="bar" width={'100%'} height={750}    
+                />
+                <Chart
+                    options={{
+                        chart: {
+                            id: 'apexchart-example'
+                        },
+                        xaxis: {
+                            categories: trendDay || []
+                        }
+                    }}
+
+                    series={[
+                        {
+                            name: "Messages on this day",
+                            data: trendDayValues || []
+                        }
+                    ]}
+                    type="line" width={'100%'} height={750}    
                 />
             </div>
         ); 
