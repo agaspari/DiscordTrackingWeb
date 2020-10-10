@@ -8,6 +8,8 @@ export default class Application extends React.Component {
             userdata: [],
             messagedata: []
         }
+
+        this.colors = ['#e6194B', '#f58231', '#ffe119', '#bfef45', '#3cb44b', '#42d4f4', '#4363d8', '#911eb4', '#000075', '#f032e6'];
     }
 
     componentDidMount() {
@@ -23,7 +25,7 @@ export default class Application extends React.Component {
                 const hours = Math.round(totalMinutes / 60, 2)
                 const minutes = Math.round(totalMinutes % 60);
                 timeCounts.push(totalMinutes);
-                timeUserCounts.push((data[i].nickname || data[i].username) + "\n" + hours + "hr " + ((minutes < 10) ? "0" + minutes : minutes) + "min");
+                timeUserCounts.push([[(data[i].nickname || data[i].username)], [hours + "hr " + ((minutes < 10) ? "0" + minutes : minutes) + "min"]]);
             }
             this.setState({ timeCounts, timeUserCounts });
         });
@@ -37,7 +39,7 @@ export default class Application extends React.Component {
             let messageCountUsers = [];
             for (let i = 0; i < data.length; i++) {
                 messageCounts.push(data[i].count);
-                messageCountUsers.push((data[i].nickname || data[i].username));
+                messageCountUsers.push([[data[i].nickname || data[i].username], data[i].count]);
             }
             this.setState({ messageCounts, messageCountUsers });
         });
@@ -97,45 +99,54 @@ export default class Application extends React.Component {
                 <br/>
                 <Chart
                     options={{
-                        chart: {
-                            id: 'apexchart-example'
-                        },
+                        colors: this.colors,
                         xaxis: {
                             categories: messageCountUsers || []
-                        }
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '45%',
+                                distributed: true
+                            }
+                        },
+                        legend: {
+                            show: false
+                        },
                     }}
-
                     series={[
                         {
                             name: "Number of Messages Sent",
                             data: messageCounts || []
                         }
                     ]}
-                    type="bar" width={'100%'} height={750}    
+                    type="bar" width={'85%'} height={750} margin={'auto'}
                 />
                 <Chart
                     options={{
-                        chart: {
-                            id: 'apexchart-example'
-                        },
+                        colors: this.colors,
                         xaxis: {
                             categories: timeUserCounts || []
-                        }
+                        },
+                        plotOptions: {
+                            bar: {
+                                columnWidth: '45%',
+                                distributed: true
+                            }
+                        },
+                        legend: {
+                            show: false
+                        },
                     }}
-
                     series={[
                         {
                             name: "Total Minutes in Server",
                             data: timeCounts || []
                         }
                     ]}
-                    type="bar" width={'100%'} height={750}    
+                    type="bar" width={'85%'} height={750} margin={'auto'} 
                 />
                 <Chart
                     options={{
-                        chart: {
-                            id: 'apexchart-example'
-                        },
                         xaxis: {
                             categories: trendDay || []
                         }
@@ -147,7 +158,7 @@ export default class Application extends React.Component {
                             data: trendDayValues || []
                         }
                     ]}
-                    type="line" width={'100%'} height={750}    
+                    type="line" width={'85%'} height={750}    
                 />
             </div>
         ); 
