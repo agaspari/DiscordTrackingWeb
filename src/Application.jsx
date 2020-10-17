@@ -1,51 +1,21 @@
 import React from "react";
 import Chart from 'react-apexcharts'
+import TimeTotalUsers from './charts/TimeTotalUsers';
+import MessageTotalUsers from './charts/MessageTotalUsers';
 
 export default class Application extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userdata: [],
-            messagedata: []
+            dateSelect: 'week',
+            startDate: '',
+            endDate: ''
         }
-
-        this.colors = ['#e6194B', '#f58231', '#ffe119', '#bfef45', '#3cb44b', '#42d4f4', '#4363d8', '#911eb4', '#000075', '#f032e6'];
     }
 
     componentDidMount() {
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/users/518686827096440832/`, {
-            
-        })
-        .then(res => res.json())
-        .then(data => {
-            let timeCounts = [];
-            let timeUserCounts = [];
-            for (let i = 0; i < data.length; i++) {
-                let totalMinutes = Math.floor(data[i].totalTime / 60);
-                const hours = Math.round(totalMinutes / 60, 2)
-                const minutes = Math.round(totalMinutes % 60);
-                timeCounts.push(totalMinutes);
-                timeUserCounts.push([[(data[i].nickname || data[i].username)], [hours + "hr " + ((minutes < 10) ? "0" + minutes : minutes) + "min"]]);
-            }
-            this.setState({ timeCounts, timeUserCounts });
-        });
-
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/518686827096440832/`, {
-            
-        })
-        .then(res => res.json())
-        .then(data => {
-            let messageCounts = [];
-            let messageCountUsers = [];
-            for (let i = 0; i < data.length; i++) {
-                messageCounts.push(data[i].count);
-                messageCountUsers.push([[data[i].nickname || data[i].username], data[i].count]);
-            }
-            this.setState({ messageCounts, messageCountUsers });
-        });
-
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/trend/518686827096440832/`, {
-            
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/trend?guildId=${'518686827096440832'}`, {
+            method: "GET"
         })
         .then(res => res.json())
         .then(data => {
@@ -57,109 +27,85 @@ export default class Application extends React.Component {
             }
             this.setState({ trendDay, trendDayValues });
         });
+    }
 
+    onRadioSelect = (e) => {
+        this.setState({ dateSelect: e.target.value });
+    }
 
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/total/518686827096440832/`, {
-            
-        })
-        .then(res => res.json())
-        .then(data => {
-            this.setState({ weeklymessages: data[0].count });
-        });
-
-
-        // fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/jointime/total/518686827096440832/`, {
-            
-        // })
-        // .then(res => res.json())
-        // .then(data => {
-        //     this.setState({ weeklyjointime: data.weeklyjointime });
-        // });
+    getDateRange = () => {
+        const { dateSelect, startDate, endDate } = this.state;
+        if (dateSelect === 'custom') {
+            return { startDate, endDate };
+        } else {
+            const today = new Date();
+            const start = new Date();
+            switch (dateSelect) {
+                case 'day':
+                    start.setDate(start.getDate() - 1);
+                    break;
+                case 'week':
+                    start.setDate(start.getDate() - 7   );
+                    break;
+                case 'month':
+                    start.setMonth(start.getMonth() - 1);
+                    break;
+            }
+            return { startDate: start.toISOString(), endDate: today.toISOString() };
+        }
     }
 
     render() {
-        const {  weeklymessages, timeCounts, timeUserCounts, messageCounts, messageCountUsers, trendDay, trendDayValues } = this.state;
-        console.log(trendDay, trendDayValues)
+        const { trendDay, trendDayValues, dateSelect, startDate, endDate } = this.state;
         return (
             <div>
-                <span>Total Weekly Messages: {weeklymessages}</span>
-                {/* <Chart
-                    width={'100%'}
-                    height={'300px'}
-                    chartType="ColumnChart"
-                    data={userdata}
-                    options={{
-                        // Material design options
-                        chart: {
-                            title: 'Weekly Join Quantity',
-                            subtitle: 'Num joins per user in the last week',
-                        },
-                    }}
-                /> */}
-                <br/>
-                <Chart
-                    options={{
-                        colors: this.colors,
-                        xaxis: {
-                            categories: messageCountUsers || []
-                        },
-                        plotOptions: {
-                            bar: {
-                                columnWidth: '45%',
-                                distributed: true
-                            }
-                        },
-                        legend: {
-                            show: false
-                        },
-                    }}
-                    series={[
-                        {
-                            name: "Number of Messages Sent",
-                            data: messageCounts || []
-                        }
-                    ]}
-                    type="bar" width={'85%'} height={750} margin={'auto'}
-                />
-                <Chart
-                    options={{
-                        colors: this.colors,
-                        xaxis: {
-                            categories: timeUserCounts || []
-                        },
-                        plotOptions: {
-                            bar: {
-                                columnWidth: '45%',
-                                distributed: true
-                            }
-                        },
-                        legend: {
-                            show: false
-                        },
-                    }}
-                    series={[
-                        {
-                            name: "Total Minutes in Server",
-                            data: timeCounts || []
-                        }
-                    ]}
-                    type="bar" width={'85%'} height={750} margin={'auto'} 
-                />
-                <Chart
-                    options={{
-                        xaxis: {
-                            categories: trendDay || []
-                        }
-                    }}
+                <div>
+                    <div>
+                        <input type="radio" id="day" name="dateSelect" value="day" checked={dateSelect === "day"} onChange={this.onRadioSelect}/>
+                        <label htmlFor="day">Day</label><br/>
+                        <input type="radio" id="week" name="dateSelect" value="week" checked={dateSelect === "week"} onChange={this.onRadioSelect}/>
+                        <label htmlFor="week">Week</label><br/>
+                        <input type="radio" id="month" name="dateSelect" value="month" checked={dateSelect === "month"} onChange={this.onRadioSelect}/>
+                        <label htmlFor="month">Month</label><br/>
+                        <input type="radio" id="custom" name="dateSelect" value="custom" checked={dateSelect === "custom"} onChange={this.onRadioSelect}/>
+                        <label htmlFor="custom">Custom Range</label>
+                    </div>
+                    {dateSelect === "custom" && (
+                        <div>
+                            <label htmlFor="start">Start date:</label>
+                            <input type="date" id="start" value="2018-07-22"/>
 
-                    series={[
-                        {
-                            name: "Messages on this day",
-                            data: trendDayValues || []
-                        }
-                    ]}
-                    type="line" width={'85%'} height={750}    
-                />
+                            <label htmlFor="end">End date: </label>
+                            <input type="date" id="end" value="2018-07-22" />
+                        </div>
+                    )}
+                    <button>Update</button>
+                </div>
+                <div>
+                    <MessageTotalUsers
+                       startDate={this.getDateRange().startDate}
+                       endDate={this.getDateRange().endDate}
+                    />
+                    <TimeTotalUsers
+                        startDate={this.getDateRange().startDate}
+                        endDate={this.getDateRange().endDate}
+                    />
+                    <Chart
+                        options={{
+                            xaxis: {
+                                categories: trendDay || []
+                            }
+                        }}
+
+                        series={[
+                            {
+                                name: "Messages on this day",
+                                data: trendDayValues || []
+                            }
+                        ]}
+                        type="line" width={'85%'} height={750}    
+                    />
+                </div>
             </div>
         ); 
     }
