@@ -31,7 +31,7 @@ export default class TimeTotalUsers extends React.Component {
     }
 
     fetchData(currentPage) {
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/users?guildId=${'518686827096440832'}&pageNum=${currentPage}`, {
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/voiceactivity?guildId=${'518686827096440832'}&pageNum=${currentPage}`, {
             method: "GET"
         })
         .then(res => res.json())
