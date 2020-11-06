@@ -3,6 +3,7 @@ import TimeTotalUsers from '../charts/TimeTotalUsers';
 import MessageTotalUsers from '../charts/MessageTotalUsers';
 import MessageTrendUsers from '../charts/MessageTrendUsers';
 import UserDropdown from '../components/UserDropdown';
+import GuildActivity from "../charts/GuildActivity";
 
 export default class Main extends React.Component {
     constructor(props) {
@@ -84,7 +85,8 @@ export default class Main extends React.Component {
                         startDate={this.getDateRange().startDate}
                         endDate={this.getDateRange().endDate}
                     />
-
+                    <GuildActivity
+                    />
                 </div>
             </div>
         ); 

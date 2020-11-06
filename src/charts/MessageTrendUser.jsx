@@ -20,7 +20,7 @@ export default class MessageTrendUser extends React.Component {
             let trendDay = [];
             let trendDayValues = [];
             for (let i = 0; i < data.length; i++) {
-                trendDay.push(data[i].date);
+                trendDay.push(`${data[i].month}/${data[i].day}`);
                 trendDayValues.push(data[i].count);
             }
             this.setState({ trendDay, trendDayValues });
