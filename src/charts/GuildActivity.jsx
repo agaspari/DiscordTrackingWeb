@@ -10,7 +10,7 @@ export default class GuildActivity extends React.Component {
     }
 
     componentDidMount() {
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/guilds?guildId=${'697941791365660733'}`, {
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/guilds?guildId=${'518686827096440832'}`, {
             method: "GET"
         })
         .then(res => res.json())
