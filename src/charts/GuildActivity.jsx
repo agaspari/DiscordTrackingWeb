@@ -15,22 +15,15 @@ export default class GuildActivity extends React.Component {
         })
         .then(res => res.json())
         .then(data => {
+            console.log("Data: ", data);
+
             let labels = [];
             let joinValues = [];
             let leaveValues = [];
             let i = 0;
             while (i < data.length ) {
-                if (i == data.length - 1) { // Last one
-                }
                 let curr = data[i];
-                let next = data[i + 1];
-
-                if (curr.day == next.day && curr.month == next.month) { // TODO: Account for year, maybe make a class.
-                    joinValues.push(curr.total);
-                    leaveValues.push(next.total);
-                    labels.push(`${curr.month}/${curr.day}`);
-                    i += 2;
-                } else {
+                if (i == data.length - 1) { // Last one
                     if (curr.type == 0) {
                         joinValues.push(curr.total);
                         leaveValues.push(0);
@@ -39,11 +32,28 @@ export default class GuildActivity extends React.Component {
                         leaveValues.push(curr.total);
                     }
                     i += 1;
+                } else {
+                    let next = data[i + 1];
+
+                    if (curr.day == next.day && curr.month == next.month) { // TODO: Account for year, maybe make a class.
+                        joinValues.push(curr.total);
+                        leaveValues.push(next.total);
+                        labels.push(`${curr.month}/${curr.day}`);
+                        i += 2;
+                    } else {
+                        if (curr.type == 0) {
+                            joinValues.push(curr.total);
+                            leaveValues.push(0);
+                        } else if (curr.type == 1) {
+                            joinValues.push(0);
+                            leaveValues.push(curr.total);
+                        }
+                        i += 1;
+                    }
                 }
             }
 
             this.setState({ labels, joinValues, leaveValues });
-            console.log(data);
         });
     }
 
