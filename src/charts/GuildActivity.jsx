@@ -18,10 +18,28 @@ export default class GuildActivity extends React.Component {
             let labels = [];
             let joinValues = [];
             let leaveValues = [];
-            for (let i = 0; i < data.length; i += 2) {
-                labels.push(`${data[i].month}/${data[i].day}`);
-                joinValues.push(data[i].total);
-                leaveValues.push(data[i + 1].total);
+            let i = 0;
+            while (i < data.length ) {
+                if (i == data.length - 1) { // Last one
+                }
+                let curr = data[i];
+                let next = data[i + 1];
+
+                if (curr.day == next.day && curr.month == next.month) { // TODO: Account for year, maybe make a class.
+                    joinValues.push(curr.total);
+                    leaveValues.push(next.total);
+                    labels.push(`${curr.month}/${curr.day}`);
+                    i += 2;
+                } else {
+                    if (curr.type == 0) {
+                        joinValues.push(curr.total);
+                        leaveValues.push(0);
+                    } else if (curr.type == 1) {
+                        joinValues.push(0);
+                        leaveValues.push(curr.total);
+                    }
+                    i += 1;
+                }
             }
 
             this.setState({ labels, joinValues, leaveValues });
