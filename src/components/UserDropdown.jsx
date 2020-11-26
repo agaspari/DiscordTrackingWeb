@@ -20,7 +20,7 @@ export default class UserDropdown extends React.Component {
                     'value': datum.userId,
                     'label': datum.nickname
                 };
-            });
+            }).filter(datum => datum.nickname);
 
             console.log(users);
             this.setState({ users });
