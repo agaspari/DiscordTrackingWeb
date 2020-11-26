@@ -15,12 +15,14 @@ export default class UserDropdown extends React.Component {
         })
         .then(res => res.json())
         .then(data => {
-            const users = data.map(datum => {
+            const users = data
+                .filter(datum => datum.nickname)
+                .map(datum => {
                 return {
                     'value': datum.userId,
                     'label': datum.nickname
                 };
-            }).filter(datum => datum.nickname);
+            });
 
             console.log(users);
             this.setState({ users });
