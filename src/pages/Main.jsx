@@ -20,13 +20,10 @@ export default class Main extends React.Component {
     }
 
     onRadioSelect = (e) => {
-        this.setState({ dateSelect: e.target.value });
-    }
-
-    getDateRange = () => {
-        const { dateSelect, startDate, endDate } = this.state;
-        if (dateSelect === 'custom') {
-            return { startDate, endDate };
+        const { startDate, endDate } = this.state;
+        const dateSelect = e.target.value;
+        if (dateSelect !== 'custom') {
+            this.setState({ startDate, endDate, dateSelect: e.target.value });
         } else {
             const today = new Date();
             const start = new Date();
@@ -41,7 +38,7 @@ export default class Main extends React.Component {
                     start.setMonth(start.getMonth() - 1);
                     break;
             }
-            return { startDate: start.toISOString(), endDate: today.toISOString() };
+            this.setState({ startDate: start.toISOString(), endDate: today.toISOString(), dateSelect: e.target.value });
         }
     }
 
@@ -74,16 +71,16 @@ export default class Main extends React.Component {
                 <div>
                     <UserDropdown/>
                     <MessageTotalUsers
-                       startDate={this.getDateRange().startDate}
-                       endDate={this.getDateRange().endDate}
+                       startDate={startDate}
+                       endDate={endDate}
                     />
                     <TimeTotalUsers
-                        startDate={this.getDateRange().startDate}
-                        endDate={this.getDateRange().endDate}
+                        startDate={startDate}
+                        endDate={endDate}
                     />
                     <MessageTrendUsers
-                        startDate={this.getDateRange().startDate}
-                        endDate={this.getDateRange().endDate}
+                        startDate={startDate}
+                        endDate={endDate}
                     />
                     <GuildActivity
                     />
