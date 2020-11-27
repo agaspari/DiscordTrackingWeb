@@ -8,10 +8,14 @@ import GuildActivity from "../charts/GuildActivity";
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
+        const start = new Date();
+        start.setDate(start.getDate() - 7);
+
+
         this.state = {
             dateSelect: 'week',
-            startDate: '',
-            endDate: ''
+            startDate: start.toISOString,
+            endDate: new Date().toISOString()
         }
     }
 
@@ -34,7 +38,7 @@ export default class Main extends React.Component {
                     start.setDate(start.getDate() - 1);
                     break;
                 case 'week':
-                    start.setDate(start.getDate() - 7   );
+                    start.setDate(start.getDate() - 7);
                     break;
                 case 'month':
                     start.setMonth(start.getMonth() - 1);

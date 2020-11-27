@@ -7,12 +7,21 @@ export default class TimeTotalUsers extends React.Component {
         super(props);
         this.state = {
             currentPage: 1,
+            startDate: this.props.startDate,
+            endDate: this.props.endDate
         }
     }
 
     componentDidMount() {
         const { currentPage } = this.state;
         this.fetchData(currentPage - 1);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { currentPage } = this.state;
+        if (this.state.startDate != nextProps.startDate || this.state.endDate != nextProps.endDate) {
+            this.setState({ startDate: nextProps.startDate, endDate: nextProps.endDate }, () => { this.fetchData(currentPage); });
+        }
     }
 
     changePage(direction) {
@@ -31,7 +40,7 @@ export default class TimeTotalUsers extends React.Component {
     }
 
     fetchData(currentPage) {
-        const { startDate, endDate } = this.props;
+        const { startDate, endDate } = this.state;
         fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages?guildId=${'518686827096440832'}&pageNum=${currentPage}&startDate=${startDate}&endDate=${endDate}`, {
             method: "GET"
         })
