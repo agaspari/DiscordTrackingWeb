@@ -73,7 +73,6 @@ export default class Main extends React.Component {
                             <input type="date" id="end" value="2018-07-22" />
                         </div>
                     )}
-                    <button>Update</button>
                 </div>
                 <div>
                     <UserDropdown/>
