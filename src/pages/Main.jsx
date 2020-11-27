@@ -14,7 +14,7 @@ export default class Main extends React.Component {
 
         this.state = {
             dateSelect: 'week',
-            startDate: start.toISOString,
+            startDate: start.toISOString(),
             endDate: new Date().toISOString()
         }
     }
