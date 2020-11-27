@@ -24,7 +24,7 @@ export default class Main extends React.Component {
         const dateSelect = e.target.value;
         console.log(startDate, endDate, dateSelect);
 
-        if (dateSelect !== 'custom') {
+        if (dateSelect === 'custom') {
             this.setState({ startDate, endDate, dateSelect: e.target.value });
         } else {
             const today = new Date();
