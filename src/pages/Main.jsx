@@ -13,9 +13,9 @@ export default class Main extends React.Component {
 
 
         this.state = {
-            dateSelect: 'week',
-            startDate: start.toISOString(),
-            endDate: new Date().toISOString()
+            dateSelect: 'alltime',
+            startDate: '',
+            endDate: ''
         }
     }
 
@@ -30,6 +30,8 @@ export default class Main extends React.Component {
 
         if (dateSelect === 'custom') {
             this.setState({ startDate, endDate, dateSelect: e.target.value });
+        } else if (dateSellect === 'alltime') {
+            this.setState({ startDate: '', endDate: '' });
         } else {
             const today = new Date();
             const start = new Date();
@@ -61,6 +63,8 @@ export default class Main extends React.Component {
                         <label htmlFor="week">Week</label><br/>
                         <input type="radio" id="month" name="dateSelect" value="month" checked={dateSelect === "month"} onChange={this.onRadioSelect}/>
                         <label htmlFor="month">Month</label><br/>
+                        <input type="radio" id="alltime" name="dateSelect" value="alltime" checked={dateSelect === "alltime"} onChange={this.onRadioSelect}/>
+                        <label htmlFor="alltime">All Time</label><br/>
                         <input type="radio" id="custom" name="dateSelect" value="custom" checked={dateSelect === "custom"} onChange={this.onRadioSelect}/>
                         <label htmlFor="custom">Custom Range</label>
                     </div>
