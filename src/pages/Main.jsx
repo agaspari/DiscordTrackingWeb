@@ -30,7 +30,7 @@ export default class Main extends React.Component {
 
         if (dateSelect === 'custom') {
             this.setState({ startDate, endDate, dateSelect: e.target.value });
-        } else if (dateSellect === 'alltime') {
+        } else if (dateSelect === 'alltime') {
             this.setState({ startDate: '', endDate: '' });
         } else {
             const today = new Date();
