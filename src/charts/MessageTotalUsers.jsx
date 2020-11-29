@@ -20,7 +20,7 @@ export default class TimeTotalUsers extends React.Component {
     componentWillReceiveProps(nextProps) {
         const { currentPage } = this.state;
         if (this.state.startDate != nextProps.startDate || this.state.endDate != nextProps.endDate) {
-            this.setState({ startDate: nextProps.startDate, endDate: nextProps.endDate }, () => { this.fetchData(currentPage); });
+            this.setState({ startDate: nextProps.startDate, endDate: nextProps.endDate }, () => { this.fetchData(currentPage - 1); });
         }
     }
 
