@@ -14,13 +14,9 @@ export default class Main extends React.Component {
 
         this.state = {
             dateSelect: 'alltime',
-            startDate: '',
-            endDate: ''
+            startDate: new Date(2000, 0).toISOString(), // Arbitrary start date before bot records
+            endDate: new Date().toISOString()
         }
-    }
-
-    componentDidMount() {
-
     }
 
     onRadioSelect = (e) => {
@@ -31,7 +27,7 @@ export default class Main extends React.Component {
         if (dateSelect === 'custom') {
             this.setState({ startDate, endDate, dateSelect: e.target.value });
         } else if (dateSelect === 'alltime') {
-            this.setState({ startDate: '', endDate: '' });
+            this.setState({ startDate: new Date(2000, 0).toISOString(), endDate: new Date().toISOString() });
         } else {
             const today = new Date();
             const start = new Date();
