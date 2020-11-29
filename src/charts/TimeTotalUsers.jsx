@@ -44,7 +44,7 @@ export default class TimeTotalUsers extends React.Component {
             let timeUserCounts = [];
             for (let i = 0; i < data.length; i++) {
                 let totalMinutes = Math.floor(data[i].totalTime / 60);
-                const hours = Math.round(totalMinutes / 60, 2)
+                const hours = Math.floor(totalMinutes / 60, 2);
                 const minutes = Math.round(totalMinutes % 60);
                 timeCounts.push(totalMinutes);
                 timeUserCounts.push([[(data[i].nickname || data[i].username)], [hours + "hr " + ((minutes < 10) ? "0" + minutes : minutes) + "min"]]);
