@@ -22,7 +22,6 @@ export default class Main extends React.Component {
     onRadioSelect = (e) => {
         const { startDate, endDate } = this.state;
         const dateSelect = e.target.value;
-        console.log(startDate, endDate, dateSelect);
 
         if (dateSelect === 'custom') {
             this.setState({ startDate, endDate, dateSelect: e.target.value });
