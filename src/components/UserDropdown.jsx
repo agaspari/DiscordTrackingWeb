@@ -1,7 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
+import { withRouter } from 'react-router-dom';
 
-export default class UserDropdown extends React.Component {
+class UserDropdown extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -50,3 +51,5 @@ export default class UserDropdown extends React.Component {
         );
     }
 }
+
+export default withRouter (UserDropdown);
