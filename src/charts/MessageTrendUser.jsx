@@ -10,8 +10,7 @@ export default class MessageTrendUser extends React.Component {
     }
 
     componentDidMount() {
-        const { userId } = this.props;
-        const { guildId, authorizationCode } = this.props;
+        const { userId, guildId, authorizationCode } = this.props;
 
         fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/trend/${userId}?guildId=${guildId}&authorizationCode=${authorizationCode}`, {
             method: "GET"

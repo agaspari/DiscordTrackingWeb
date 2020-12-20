@@ -48,7 +48,7 @@ export default class TimeTotalUsers extends React.Component {
         })
         .then(res => res.json())
         .then(data => {
-            if (data.length == 0) {
+            if (data.length === 0) {
                 this.setState({ currentPage });
                 return;
             }

@@ -11,7 +11,7 @@ export default class AuthorizationProvider extends Component {
         }
 
         this.state = {
-            guildId: sessionStorage.getItem("guildID") || "",
+            guildId: sessionStorage.getItem("guildId") || "",
             authorizationCode: sessionStorage.getItem("authorizationCode") || "",
             setAuthData: this.setAuthData
         };
