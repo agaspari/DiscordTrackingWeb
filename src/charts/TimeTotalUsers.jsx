@@ -7,12 +7,21 @@ export default class TimeTotalUsers extends React.Component {
         super(props);
         this.state = {
             currentPage: 1,
+            startDate: this.props.startDate,
+            endDate: this.props.endDate
         }
     }
 
     componentDidMount() {
         const { currentPage } = this.state;
         this.fetchData(currentPage - 1);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { currentPage } = this.state;
+        if (this.state.startDate != nextProps.startDate || this.state.endDate != nextProps.endDate) {
+            this.setState({ startDate: nextProps.startDate, endDate: nextProps.endDate }, () => { this.fetchData(currentPage - 1); });
+        }
     }
 
     changePage(direction) {
@@ -31,7 +40,10 @@ export default class TimeTotalUsers extends React.Component {
     }
 
     fetchData(currentPage) {
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/voiceactivity?guildId=${'518686827096440832'}&pageNum=${currentPage}`, {
+        const { startDate, endDate } = this.state;
+        const { guildId, authorizationCode } = this.props;
+
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/voiceactivity?guildId=${guildId}&pageNum=${currentPage}&startDate=${startDate}&endDate=${endDate}&authorizationCode=${authorizationCode}`, {
             method: "GET"
         })
         .then(res => res.json())
@@ -69,7 +81,7 @@ export default class TimeTotalUsers extends React.Component {
                         }}
                         series={[
                             {
-                                name: "Number of Messages Sent",
+                                name: "Time Spent in Voice Channel",
                                 data: timeCounts || []
                             }
                         ]}

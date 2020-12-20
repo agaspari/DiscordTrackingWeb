@@ -10,7 +10,9 @@ export default class UserDropdown extends React.Component {
     }
 
     componentDidMount() {
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/users?guildId=${'518686827096440832'}`, {
+        const { guildId, authorizationCode } = this.props;
+
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/users?guildId=${guildId}&authorizationCode=${authorizationCode}`, {
             method: 'GET',
         })
         .then(res => res.json())
@@ -31,6 +33,7 @@ export default class UserDropdown extends React.Component {
 
     render() {
         const { users } = this.state;
+        const { guildId } = this.props;
 
         return (
             <div className="user-select">
@@ -41,7 +44,7 @@ export default class UserDropdown extends React.Component {
                     isSearchable={true}
                     name="users"
                     options={users}
-                    onChange={(e) => { window.location.href = `/user/${'518686827096440832'}/${e.value}`}}
+                    onChange={(e) => { this.props.history.push(`/user/${guildId}/${e.value}`) }}
                 />
             </div>
         );

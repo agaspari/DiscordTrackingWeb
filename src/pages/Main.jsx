@@ -1,94 +1,66 @@
 import React from "react";
-import TimeTotalUsers from '../charts/TimeTotalUsers';
-import MessageTotalUsers from '../charts/MessageTotalUsers';
-import MessageTrendUsers from '../charts/MessageTrendUsers';
-import UserDropdown from '../components/UserDropdown';
-import GuildActivity from "../charts/GuildActivity";
+import { AuthContext } from "../providers/AuthorizationProvider";
 
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
-        const start = new Date();
-        start.setDate(start.getDate() - 7);
-
-
         this.state = {
-            dateSelect: 'alltime',
-            startDate: new Date(2000, 0).toISOString(), // Arbitrary start date before bot records
-            endDate: new Date().toISOString()
+            guildId: "",
+            authorizationId: "",
+            error: ""
         }
     }
 
-    onRadioSelect = (e) => {
-        const { startDate, endDate } = this.state;
-        const dateSelect = e.target.value;
+    static contextType = AuthContext;
 
-        if (dateSelect === 'custom') {
-            this.setState({ startDate, endDate, dateSelect: e.target.value });
-        } else if (dateSelect === 'alltime') {
-            this.setState({ startDate: new Date(2000, 0).toISOString(), endDate: new Date().toISOString(), dateSelect: e.target.value  });
-        } else {
-            const today = new Date();
-            const start = new Date();
-            switch (dateSelect) {
-                case 'day':
-                    start.setDate(start.getDate() - 1);
-                    break;
-                case 'week':
-                    start.setDate(start.getDate() - 7);
-                    break;
-                case 'month':
-                    start.setMonth(start.getMonth() - 1);
-                    break;
+    inputChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+    }
+
+    showError = (error) => {
+        this.setState({ error }, () => {
+            setTimeout(() => {
+                this.setState({ error: "" });
+            }, 2000);
+        })
+    }
+    validateAuthorization = () => {
+        const { guildId, authorizationId } = this.state;
+
+        fetch(`${window.location.protocol}//${window.location.hostname}:4000/api/authorization/${guildId}/${authorizationId}`, {
+            method: "GET"
+        })
+        .then(data => { 
+            if (data.status === 200) {
+                return data.json();
+            } else {
+                this.showError("Invalid Authorization for Provided Guild");
+                return undefined;
             }
-            this.setState({ startDate: start.toISOString(), endDate: today.toISOString(), dateSelect: e.target.value });
-        }
+        })
+        .then(json => {
+            if (json) {
+                this.context.setAuthData(guildId, authorizationId);
+                this.props.history.push(`/guild/${guildId}`);
+            }
+        });
     }
 
     render() {
-        const { trendDay, trendDayValues, dateSelect, startDate, endDate } = this.state;
-        console.log(startDate, endDate);
+        const { guildId, authorizationId, error } = this.state;
+
         return (
             <div>
+                <h1>Insert Credentials</h1>
                 <div>
-                    <div>
-                        <input type="radio" id="day" name="dateSelect" value="day" checked={dateSelect === "day"} onChange={this.onRadioSelect}/>
-                        <label htmlFor="day">Day</label><br/>
-                        <input type="radio" id="week" name="dateSelect" value="week" checked={dateSelect === "week"} onChange={this.onRadioSelect}/>
-                        <label htmlFor="week">Week</label><br/>
-                        <input type="radio" id="month" name="dateSelect" value="month" checked={dateSelect === "month"} onChange={this.onRadioSelect}/>
-                        <label htmlFor="month">Month</label><br/>
-                        <input type="radio" id="alltime" name="dateSelect" value="alltime" checked={dateSelect === "alltime"} onChange={this.onRadioSelect}/>
-                        <label htmlFor="alltime">All Time</label><br/>
-                        <input type="radio" id="custom" name="dateSelect" value="custom" checked={dateSelect === "custom"} onChange={this.onRadioSelect}/>
-                        <label htmlFor="custom">Custom Range</label>
-                    </div>
-                    {dateSelect === "custom" && (
-                        <div>
-                            <label htmlFor="start">Start date:</label>
-                            <input type="date" id="start" value="2018-07-22"/>
-
-                            <label htmlFor="end">End date: </label>
-                            <input type="date" id="end" value="2018-07-22" />
-                        </div>
+                    <label htmlFor="guildId">Guild ID</label><br/>
+                    <input name="guildId" value={guildId} onChange={this.inputChange}/><br/><br/>
+                    <label htmlFor="authorizationId">Authorization Id</label><br/>
+                    <input name="authorizationId" value={authorizationId} onChange={this.inputChange}/><br/><br/>
+                    <button onClick={this.validateAuthorization}>Load Guild</button><br/><br/>
+                    {error && (
+                        <span style={{ color: "red" }}>{error}</span>
                     )}
-                </div>
-                <div>
-                    <UserDropdown/>
-                    <MessageTotalUsers
-                       startDate={startDate}
-                       endDate={endDate}
-                    />
-                    <TimeTotalUsers
-                        startDate={startDate}
-                        endDate={endDate}
-                    />
-                    <MessageTrendUsers
-                        startDate={startDate}
-                        endDate={endDate}
-                    />
-                    <GuildActivity
-                    />
                 </div>
             </div>
         ); 

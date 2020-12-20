@@ -10,7 +10,9 @@ export default class GuildActivity extends React.Component {
     }
 
     componentDidMount() {
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/guilds?guildId=${'518686827096440832'}`, {
+        const { guildId, authorizationCode } = this.props;
+
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/guilds?guildId=${guildId}&authorizationCode=${authorizationCode}`, {
             method: "GET"
         })
         .then(res => res.json())

@@ -10,7 +10,9 @@ export default class MessageTrendUsers extends React.Component {
     }
 
     componentDidMount() {
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/trend?guildId=${'518686827096440832'}`, {
+        const { guildId, authorizationCode } = this.props;
+
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages/trend?guildId=${guildId}&authorizationCode=${authorizationCode}`, {
             method: "GET"
         })
         .then(res => res.json())

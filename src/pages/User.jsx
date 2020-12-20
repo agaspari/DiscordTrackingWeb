@@ -1,5 +1,6 @@
 import React from "react";
 import MessageTrendUser from '../charts/MessageTrendUser';
+import { AuthContext } from "../providers/AuthorizationProvider";
 
 export default class User extends React.Component {
     constructor(props) {
@@ -8,6 +9,8 @@ export default class User extends React.Component {
             userData: {}
         }
     }
+
+    static contextType = AuthContext;
 
     componentDidMount() {
         const { userId } = this.props.match.params;
@@ -24,6 +27,7 @@ export default class User extends React.Component {
     render() {
         const { userId } = this.props.match.params;
         const { userData } = this.state;
+        const { guildId, authorizationCode } = this.context;
 
         return (
             <div>
@@ -34,6 +38,8 @@ export default class User extends React.Component {
                 <div>
                     <MessageTrendUser
                         userId={userId}
+                        guildId={guildId}
+                        authorizationCode={authorizationCode}
                     />
                 </div>
             </div>

@@ -41,7 +41,9 @@ export default class TimeTotalUsers extends React.Component {
 
     fetchData(currentPage) {
         const { startDate, endDate } = this.state;
-        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages?guildId=${'518686827096440832'}&pageNum=${currentPage}&startDate=${startDate}&endDate=${endDate}`, {
+        const { guildId, authorizationCode } = this.props;
+
+        fetch (`${window.location.protocol}//${window.location.hostname}:4000/api/messages?guildId=${guildId}&pageNum=${currentPage}&startDate=${startDate}&endDate=${endDate}&authorizationCode=${authorizationCode}`, {
             method: "GET"
         })
         .then(res => res.json())
