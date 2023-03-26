@@ -1,6 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import { withRouter } from 'react-router-dom';
+import { history } from "../AppRouter";
 
 class UserDropdown extends React.Component {
     constructor(props) {
@@ -45,7 +46,7 @@ class UserDropdown extends React.Component {
                     isSearchable={true}
                     name="users"
                     options={users}
-                    onChange={(e) => { this.props.history.push(`/user/${guildId}/${e.value}`) }}
+                    onChange={(e) => { history.push(`/user/${guildId}/${e.value}`) }}
                 />
             </div>
         );
